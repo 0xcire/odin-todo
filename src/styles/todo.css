@@ -1,0 +1,44 @@
+.todos {
+  margin-top: 2rem;
+}
+
+.todo {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  /* border: 1px solid black; */
+  justify-content: space-between;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#todo-title {
+  color: #000;
+  font-weight: 700;
+  border: none;
+  width: 100%;
+}
+
+#todo-date {
+  margin-top: 0.3rem;
+  color: #000;
+  border: none;
+}
+.completion {
+  width: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit {
+  cursor: pointer;
+}
+
+.delete {
+  padding: 0.4rem;
+}

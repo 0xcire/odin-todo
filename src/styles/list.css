@@ -1,0 +1,35 @@
+#lists {
+  margin-top: 2rem;
+  height: 100%;
+
+  display: grid;
+  /* 2 col on larger displays */
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(auto-fill, 50px);
+
+  /*gap: 1rem;
+  padding: 1rem; */
+}
+
+.list {
+  /* cursor: pointer; */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 2rem;
+  border-radius: 5px;
+
+  -webkit-box-shadow: 4px 3px 6px 0px rgba(211, 211, 211, 1);
+  -moz-box-shadow: 4px 3px 6px 0px rgba(211, 211, 211, 1);
+  box-shadow: 4px 3px 6px 0px rgba(211, 211, 211, 1);
+}
+
+.list-name,
+.list-del {
+  cursor: pointer;
+}
+
+.how-many {
+  font-weight: 700;
+}

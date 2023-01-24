@@ -1,0 +1,61 @@
+@import "./list.css";
+@import "./todo.css";
+@import "./forms.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, sans-serif;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  position: relative;
+}
+
+/* * {
+  border: 1px solid red;
+} */
+
+/* layout */
+#app {
+  font-size: 1.6rem;
+  width: 100vw;
+  height: 100vh;
+  padding: 5rem 2rem;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+#sidebar {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid black;
+  padding-right: 2rem;
+}
+.display {
+  width: 100%;
+}
+
+.additions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.add-todo,
+.add-project {
+  cursor: pointer;
+  padding: 0.3rem;
+  outline: none;
+}
+
+.display {
+  padding: 0 2rem;
+}
