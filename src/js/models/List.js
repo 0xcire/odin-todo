@@ -1,4 +1,4 @@
-import { storage } from "./Storage";
+import { storage } from "./Storage.js";
 
 export default class List {
   constructor() {

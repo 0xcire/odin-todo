@@ -1,4 +1,4 @@
-import { elements } from "./DOM";
+import { elements } from "./DOM.js";
 
 export default class ListView {
   constructor(lists) {

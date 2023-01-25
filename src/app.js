@@ -1,12 +1,12 @@
-import TodoView from "./js/views/todoView";
-import Todo from "./js/models/Todo";
+import TodoView from "./js/views/todoView.js";
+import Todo from "./js/models/Todo.js";
 
-import ListView from "./js/views/listView";
-import List from "./js/models/List";
+import ListView from "./js/views/listView.js";
+import List from "./js/models/List.js";
 
-import { storage } from "./js/models/Storage";
+import { storage } from "./js/models/Storage.js";
 
-import { elements } from "./js/views/DOM";
+import { elements } from "./js/views/DOM.js";
 
 //ideal:
 //display warning that doing so will delete all related

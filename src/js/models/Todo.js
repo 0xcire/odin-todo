@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 
-import { storage } from "./Storage";
+import { storage } from "./Storage.js";
 
 export default class Todo {
   constructor() {
