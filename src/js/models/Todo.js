@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { nanoid } from "../../../node_modules/nanoid/nanoid.js";
 
 import { storage } from "./Storage.js";
 
