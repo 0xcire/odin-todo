@@ -10,8 +10,6 @@ import { elements } from "./js/views/DOM";
 
 //ideal:
 //display warning that doing so will delete all related
-//dont show date input unless filled out
-//check to not pop up both forms at once
 
 document.addEventListener("DOMContentLoaded", () => {
   let greeting = "Today is ";
@@ -43,6 +41,8 @@ const listController = () => {
 
     lV.toggleListForm(listFormDiv);
     lV.renderLists(listsWrapper, list.getLists.bind(list));
+    //update list count
+    lV.updateListCount(storage);
 
     lV.createListSelection(listName, listDropdown);
     listForm.reset();
@@ -51,7 +51,6 @@ const listController = () => {
   //handle list delete
   document.addEventListener("click", (e) => {
     const delIcon = e.target.closest(".list-del");
-    //avoid console errors by not saving activeList out here
     if (delIcon && delIcon.parentElement.id === "All") return;
     if (delIcon) {
       const activeList = delIcon.parentElement.id;

@@ -52,6 +52,13 @@ export default class ListView {
     return elements.listFormInput.value;
   }
 
+  updateListCount(storage) {
+    document.querySelectorAll(".list").forEach((list) => {
+      const displayCount = list.children[1];
+      displayCount.textContent = storage.todos[list.id].length;
+    });
+  }
+
   createListSelection(name, el) {
     const selection = document.createElement("option");
     selection.setAttribute("value", name);
@@ -62,6 +69,7 @@ export default class ListView {
 
   handleListFormToggle(el) {
     elements.addList.addEventListener("click", () => {
+      if (elements.todoFormDiv.style.display === "block") return;
       this.toggleListForm(elements.listFormDiv);
     });
   }

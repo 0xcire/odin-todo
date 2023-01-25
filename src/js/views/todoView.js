@@ -107,6 +107,7 @@ export default class TodoView {
 
   handleTodoFormToggle(el) {
     elements.addTodo.addEventListener("click", () => {
+      if (elements.listFormDiv.style.display === "block") return;
       this.toggleTodoForm(elements.todoFormDiv);
     });
   }
