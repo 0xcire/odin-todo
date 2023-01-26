@@ -6,8 +6,19 @@
   margin-top: 0.5rem;
   display: flex;
   align-items: center;
-  /* border: 1px solid black; */
   justify-content: space-between;
+}
+
+@media screen and (min-width: 1200px) {
+  .todo {
+    padding-right: 40rem;
+  }
+}
+
+@media screen and (min-width: 1500px) {
+  .todo {
+    padding-right: 60rem;
+  }
 }
 
 .text {

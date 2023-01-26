@@ -8,12 +8,19 @@ import { storage } from "./js/models/Storage.js";
 
 import { elements } from "./js/views/DOM.js";
 
+import * as utils from "./js/utils/utils.js";
+
 //ideal:
 //display warning that doing so will delete all related
+
+//troubles:
+//listening for data change || both list and todo updating list length ?
+//listController and todoController not abstract enough?
 
 document.addEventListener("DOMContentLoaded", () => {
   let greeting = "Today is ";
   const date = new Date();
+  //use INTL
   const today = date.toString().split(" ").slice(0, 4).join(" ");
   elements.currentDate.textContent = today;
   storage.getTodosFromLocalStorage(elements.todosWrapper);
@@ -23,26 +30,24 @@ const listController = () => {
   const lV = new ListView();
   const list = new List();
 
-  //renders default list: 'all'
-  lV.renderLists(elements.listsWrapper, list.getLists.bind(list));
-
   //show form
   lV.handleListFormToggle();
 
+  //handle new list form submission
   elements.listForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const { listForm, listFormInput, listFormDiv, listsWrapper, listDropdown } =
       elements;
 
     const listName = lV.getListName(listFormInput);
+
     if (lV.noListName(listName)) return;
 
     list.addListToStorage(listName);
 
     lV.toggleListForm(listFormDiv);
-    lV.renderLists(listsWrapper, list.getLists.bind(list));
-    //update list count
-    lV.updateListCount(storage);
+
+    lV.renderLists(listsWrapper, list.getLists.bind(list), storage);
 
     lV.createListSelection(listName, listDropdown);
     listForm.reset();
@@ -51,24 +56,20 @@ const listController = () => {
   //handle list delete
   document.addEventListener("click", (e) => {
     const delIcon = e.target.closest(".list-del");
-    if (delIcon && delIcon.parentElement.id === "All") return;
+    if (delIcon && delIcon.parentElement.dataset.name === "All") return;
     if (delIcon) {
-      const activeList = delIcon.parentElement.id;
+      const parent = delIcon.parentElement;
+      const activeList = utils.getDataName(parent);
       list.delete(activeList);
     }
   });
 
+  // renders existing lists on page load
   document.addEventListener("DOMContentLoaded", () => {
-    //render lists on page load
-    lV.renderLists(elements.listsWrapper, list.getLists.bind(list));
-    let lists = list.getLists();
+    lV.renderLists(elements.listsWrapper, list.getLists.bind(list), storage);
+    const lists = list.getLists();
     lists.forEach((list) => {
-      //create dropdown option selections for existing lists
       lV.createListSelection(list, elements.listDropdown);
-      //repopulate list length back onto card
-      //have both todo and list controller dealing with todo list length display...not ideal
-      const len = storage.todos[list].length;
-      document.querySelector(`#${list} .how-many`).textContent = len;
     });
   });
 };
@@ -98,6 +99,7 @@ const todoController = () => {
     tV.toggleTodoForm(todoFormDiv);
     tV.renderTodos(todosWrapper, todo.getTodos.bind(todo), list);
 
+    //listview.updateListCount after observing data change on storage.todos..?
     tV.updateTodoListCount(todo.getTodoListLength.bind(todo), list);
 
     tV.resetTitleAndDate(todoForm);
@@ -120,11 +122,9 @@ const todoController = () => {
     if (e.target.closest(".delete")) {
       const parent = e.target.closest(".todo");
       const id = parent.id;
-      const list = parent.parentElement.previousElementSibling.textContent;
+      const list = parent.parentElement.previousElementSibling.dataset.name;
       todo.delete(id, list);
 
-      //could also element.remove based off (nano)id
-      //currently just re renders
       tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), list);
 
       tV.updateTodoListCount(todo.getTodoListLength.bind(todo), list);
@@ -134,17 +134,25 @@ const todoController = () => {
   //change todo lists
   document.addEventListener("click", (e) => {
     if (e.target.closest(".list-name")) {
-      const activeList = e.target.dataset.name;
+      const activeList = e.target.textContent;
+      const format = utils.addHyphen(activeList);
 
       tV.updateTodoFormListSelection(activeList);
       tV.updateTodoListTitle(activeList);
 
       //render todos for active list
-      tV.renderTodos(
-        elements.todosWrapper,
-        todo.getTodos.bind(todo),
-        activeList
-      );
+      tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), format);
+    }
+  });
+
+  //switches todo lists in todo form so you see where your todo goes
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("option")) {
+      const name = e.target.closest("option").value;
+      const format = utils.addHyphen(name);
+
+      tV.updateTodoListTitle(name);
+      tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), format);
     }
   });
 
@@ -152,6 +160,7 @@ const todoController = () => {
   //always defaults back to all list currently
   document.addEventListener("DOMContentLoaded", () => {
     tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), "All");
+    tV.updateTodoListTitle("All");
   });
 };
 todoController();

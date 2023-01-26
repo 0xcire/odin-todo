@@ -1,4 +1,5 @@
 import { elements } from "./DOM.js";
+import * as utils from "../utils/utils.js";
 
 export default class TodoView {
   constructor(todos) {
@@ -15,7 +16,9 @@ export default class TodoView {
 
   toggleEdit(e) {
     const htmlCollection = e.target.closest(".todo").children[0].children;
+    const checked = e.target.closest(".todo").children[1].children[0];
     const inputs = [].slice.call(htmlCollection);
+    inputs.push(checked);
 
     inputs.forEach((input) => {
       input.disabled ? (input.disabled = false) : (input.disabled = true);
@@ -26,12 +29,12 @@ export default class TodoView {
   renderTodos(el, callback, list) {
     el.innerHTML = "";
     //loop through list
-    const array = callback(list);
-    for (let i = 0; i < array.length; i++) {
+    const todos = callback(list);
+    for (let i = 0; i < todos.length; i++) {
       // create structure
       const todo = document.createElement("div");
       todo.classList.add("todo");
-      todo.setAttribute("id", array[i].id);
+      todo.setAttribute("id", todos[i].id);
 
       const text = document.createElement("div");
       text.classList.add("text");
@@ -59,17 +62,19 @@ export default class TodoView {
       //specify input types
       title.setAttribute("type", "text");
       title.setAttribute("name", "todo-title");
-      title.setAttribute("value", array[i].title);
+      title.setAttribute("value", todos[i].title);
       title.setAttribute("disabled", true);
 
       due.setAttribute("type", "date");
       due.setAttribute("name", "todo-date");
-      due.value = array[i].due;
+      due.value = todos[i].due;
       due.setAttribute("required", true);
       due.setAttribute("disabled", true);
 
       done.setAttribute("type", "checkbox");
       done.setAttribute("name", "done");
+      done.setAttribute("disabled", true);
+      done.checked = todos[i].completed;
 
       del.appendChild(trash);
 
@@ -92,16 +97,20 @@ export default class TodoView {
     el[1].value = "";
   }
 
-  //this is ideally part of list/listView via proxy?
+  //this is ideally part of list/listView?
+  //how to listen for data change on storage.todos{}
   updateTodoListCount(callback, list) {
-    document.querySelector(`#${list} .how-many`).textContent = callback(list);
+    document.querySelector(`[data-name='${list}'] .how-many`).textContent =
+      callback(list);
   }
 
   updateTodoFormListSelection(list) {
-    document.querySelector(`option[value=${list}]`).selected = true;
+    const format = utils.addHyphen(list);
+    document.querySelector(`option[value='${format}']`).selected = true;
   }
 
   updateTodoListTitle(list) {
+    elements.currentList.dataset.name = utils.addHyphen(list);
     elements.currentList.textContent = list;
   }
 

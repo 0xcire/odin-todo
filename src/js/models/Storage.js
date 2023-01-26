@@ -2,6 +2,7 @@ class Storage {
   constructor(arr) {
     this.todos = {
       All: [],
+      completed: [],
     };
   }
 
