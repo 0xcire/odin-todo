@@ -113,7 +113,7 @@ const todoController = () => {
 
       title.disabled
         ? tV.toggleEdit(e)
-        : todo.getUpdatedValues(e, tV.toggleEdit, parent);
+        : todo.getUpdatedValues(e, tV.toggleEdit.bind(tV), parent);
     }
   });
 

@@ -2,11 +2,9 @@ class Storage {
   constructor(arr) {
     this.todos = {
       All: [],
-      completed: [],
     };
   }
 
-  //hmm..
   removeList(list) {
     delete this.todos[list];
     this.pushToLocalStorage();

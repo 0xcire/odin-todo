@@ -14,14 +14,27 @@ export default class TodoView {
     }
   }
 
+  disabled(edited, el) {
+    edited.style.borderBottom = "";
+    el.disabled = true;
+  }
+
+  enabled(edited, el) {
+    edited.style.borderBottom = "2px solid black";
+    el.disabled = false;
+  }
+
   toggleEdit(e) {
-    const htmlCollection = e.target.closest(".todo").children[0].children;
-    const checked = e.target.closest(".todo").children[1].children[0];
+    const todo = e.target.closest(".todo");
+    const htmlCollection = todo.children[0].children;
+    const checked = todo.children[1].children[0];
     const inputs = [].slice.call(htmlCollection);
     inputs.push(checked);
 
     inputs.forEach((input) => {
-      input.disabled ? (input.disabled = false) : (input.disabled = true);
+      input.disabled
+        ? this.enabled(todo.children[0], input)
+        : this.disabled(todo.children[0], input);
     });
   }
 
