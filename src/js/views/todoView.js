@@ -15,12 +15,13 @@ export default class TodoView {
   }
 
   disabled(edited, el) {
-    edited.style.borderBottom = "";
+    edited.style.border = "";
     el.disabled = true;
   }
 
   enabled(edited, el) {
-    edited.style.borderBottom = "2px solid black";
+    edited.style.border = "2px solid black";
+    edited.style.borderRadius = "5px";
     el.disabled = false;
   }
 

@@ -33,12 +33,17 @@
   border: none;
   width: 100%;
 }
+input[name="todo-title"]:focus,
+input[name="todo-date"]:focus {
+  outline: 0;
+}
 
 #todo-date {
   margin-top: 0.3rem;
   color: #000;
   border: none;
 }
+
 .completion {
   width: 10%;
   display: flex;
