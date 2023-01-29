@@ -1,166 +1,174 @@
-import TodoView from "./js/views/todoView.js";
-import Todo from "./js/models/Todo.js";
+import * as tV from './js/views/todoView';
+import Todo from './js/models/Todo';
 
-import ListView from "./js/views/listView.js";
-import List from "./js/models/List.js";
+import * as lV from './js/views/listView';
+import List from './js/models/List';
 
-import { storage } from "./js/models/Storage.js";
+import storage from './js/models/Storage';
 
-import { elements } from "./js/views/DOM.js";
+import elements from './js/views/DOM';
 
-import * as utils from "./js/utils/utils.js";
+import * as utils from './js/utils/utils';
 
-//ideal:
-//display warning that doing so will delete all related
+const state = {
+  list: new List(),
+  todo: new Todo(),
+};
 
-//troubles:
-//listening for data change || both list and todo updating list length ?
-//listController and todoController not abstract enough?
-
-document.addEventListener("DOMContentLoaded", () => {
-  let greeting = "Today is ";
+document.addEventListener('DOMContentLoaded', () => {
   const date = new Date();
-  //use INTL
-  const today = date.toString().split(" ").slice(0, 4).join(" ");
-  elements.currentDate.textContent = today;
-  storage.getTodosFromLocalStorage(elements.todosWrapper);
+  const localFormat = new Intl.DateTimeFormat('en-US').format(date);
+  elements.currentDate.textContent = localFormat;
+  storage.getTodosFromLocal(elements.todosWrapper);
 });
 
 const listController = () => {
-  const lV = new ListView();
-  const list = new List();
+  const { listFormInput, listsWrapper, listDropdown } = elements;
+  lV.attachListFormEvents();
+  lV.attachMobileViewEvents();
 
-  //show form
-  lV.handleListFormToggle();
-
-  //handle new list form submission
-  elements.listForm.addEventListener("submit", (e) => {
+  // handle new list form submission
+  elements.listForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const { listForm, listFormInput, listFormDiv, listsWrapper, listDropdown } =
-      elements;
 
-    const listName = lV.getListName(listFormInput);
+    const name = listFormInput.value;
+    state.list.addListToStorage(name);
 
-    if (lV.noListName(listName)) return;
+    lV.hideForm(e.target.parentElement);
+    const lists = state.list.getLists();
+    lV.renderLists(listsWrapper, lists, storage);
 
-    list.addListToStorage(listName);
-
-    lV.toggleListForm(listFormDiv);
-
-    lV.renderLists(listsWrapper, list.getLists.bind(list), storage);
-
-    lV.createListSelection(listName, listDropdown);
-    listForm.reset();
+    lV.createListOption(name, listDropdown);
+    e.target.reset();
   });
 
-  //handle list delete
-  document.addEventListener("click", (e) => {
-    const delIcon = e.target.closest(".list-del");
-    if (delIcon && delIcon.parentElement.dataset.name === "All") return;
+  // handle list delete
+  document.addEventListener('click', (e) => {
+    const delIcon = e.target.closest('.list-del');
     if (delIcon) {
-      const parent = delIcon.parentElement;
-      const activeList = utils.getDataName(parent);
-      list.delete(activeList);
+      const listElement = delIcon.parentElement;
+      const activeList = utils.elDataName(listElement);
+      if (activeList === 'All') return;
+
+      state.list.delete(activeList);
+      lV.removeListOption(activeList);
+
+      // list is deleted so show default view; All list with its todos
+      const todos = state.todo.getTodos();
+      tV.renderTodos(elements.todosWrapper, todos);
+      tV.updateTodoListTitle();
     }
   });
 
   // renders existing lists on page load
-  document.addEventListener("DOMContentLoaded", () => {
-    lV.renderLists(elements.listsWrapper, list.getLists.bind(list), storage);
-    const lists = list.getLists();
+  document.addEventListener('DOMContentLoaded', () => {
+    const lists = state.list.getLists();
+    lV.renderLists(listsWrapper, lists, storage);
+
     lists.forEach((list) => {
-      lV.createListSelection(list, elements.listDropdown);
+      lV.createListOption(list, listDropdown);
     });
   });
 };
 listController();
 
-//todoController
+// todoController
 const todoController = () => {
-  const tV = new TodoView();
-  const todo = new Todo();
+  const { todoForm, todosWrapper } = elements;
 
-  const { todoForm, todoFormDiv, todosWrapper } = elements;
+  tV.attachTodoFormEvents();
 
-  //show todo form
-  tV.handleTodoFormToggle();
-
-  //handleFormSubmit
-  todoForm.addEventListener("submit", (e) => {
+  // handleFormSubmit
+  todoForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const data = new FormData(todoForm);
-    if (data.get("title") === "") return;
+    state.todo.saveData(data);
+    const list = data.get('list');
 
-    const newTodo = todo.saveData(data);
-    const list = data.get("list");
+    tV.hideForm(e.target.parentElement);
+    const todos = state.todo.getTodos(list);
+    tV.renderTodos(todosWrapper, todos, list);
 
-    //hide todo form
-    tV.toggleTodoForm(todoFormDiv);
-    tV.renderTodos(todosWrapper, todo.getTodos.bind(todo), list);
-
-    //listview.updateListCount after observing data change on storage.todos..?
-    tV.updateTodoListCount(todo.getTodoListLength.bind(todo), list);
+    const count = state.todo.getTotalTodos(list);
+    lV.updateListCount(count, list);
 
     tV.resetTitleAndDate(todoForm);
   });
 
-  //handleEditTodo
-  document.addEventListener("click", (e) => {
-    if (e.target.closest(".edit")) {
-      const parent = e.target.closest(".todo");
-      const title = parent.children[0].children[0];
+  // handleEditTodo
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.edit')) {
+      const parent = e.target.closest('.todo');
+      const { id } = parent;
+      const list = document.querySelector('.current-list').textContent;
+      const titleAndDue = parent.children[0].children;
+      const checked = parent.children[1].children[0];
+      const inputs = [].slice.call(titleAndDue);
+      inputs.push(checked);
 
-      title.disabled
-        ? tV.toggleEdit(e)
-        : todo.getUpdatedValues(e, tV.toggleEdit.bind(tV), parent);
+      if (titleAndDue[0].disabled) {
+        tV.enableEdit(inputs);
+      } else {
+        tV.disableEdit(inputs);
+        const values = state.todo.constructor.getUpdatedValues(inputs);
+        state.todo.updateEdit(id, list, values);
+      }
     }
   });
 
   // handleDeleteTodo
-  document.addEventListener("click", (e) => {
-    if (e.target.closest(".delete")) {
-      const parent = e.target.closest(".todo");
-      const id = parent.id;
-      const list = parent.parentElement.previousElementSibling.dataset.name;
-      todo.delete(id, list);
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.delete')) {
+      const todoEl = e.target.closest('.todo');
+      const { id } = todoEl;
+      const list = utils.elDataName(todoEl);
+      state.todo.delete(id, list);
 
-      tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), list);
+      const todos = state.todo.getTodos(list);
+      tV.renderTodos(elements.todosWrapper, todos, list);
 
-      tV.updateTodoListCount(todo.getTodoListLength.bind(todo), list);
+      const count = state.todo.getTotalTodos(list);
+      lV.updateListCount(count, list);
     }
   });
 
-  //change todo lists
-  document.addEventListener("click", (e) => {
-    if (e.target.closest(".list-name")) {
+  // change todo lists
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.list-name')) {
       const activeList = e.target.textContent;
       const format = utils.addHyphen(activeList);
 
       tV.updateTodoFormListSelection(activeList);
       tV.updateTodoListTitle(activeList);
 
-      //render todos for active list
-      tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), format);
+      const todos = state.todo.getTodos(format);
+      tV.renderTodos(elements.todosWrapper, todos, format);
+
+      if (window.innerWidth < 1080) {
+        lV.hideMobileSidebar();
+      }
     }
   });
 
-  //switches todo lists in todo form so you see where your todo goes
-  document.addEventListener("click", (e) => {
-    if (e.target.closest("option")) {
-      const name = e.target.closest("option").value;
-      const format = utils.addHyphen(name);
+  // switches todo lists in todo form so you see where your todo goes
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('option')) {
+      const name = e.target.closest('option').value;
+      const format = utils.addASpace(name);
 
-      tV.updateTodoListTitle(name);
-      tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), format);
+      tV.updateTodoListTitle(format);
+      const todos = state.todo.getTodos(name);
+      tV.renderTodos(elements.todosWrapper, todos, name);
     }
   });
 
-  //render todos on page load
-  //always defaults back to all list currently
-  document.addEventListener("DOMContentLoaded", () => {
-    tV.renderTodos(elements.todosWrapper, todo.getTodos.bind(todo), "All");
-    tV.updateTodoListTitle("All");
+  // render todos on page load
+  // always defaults back to all list currently
+  document.addEventListener('DOMContentLoaded', () => {
+    const todos = state.todo.getTodos();
+    tV.renderTodos(elements.todosWrapper, todos);
+    tV.updateTodoListTitle();
   });
 };
 todoController();

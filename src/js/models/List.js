@@ -1,6 +1,6 @@
-import { storage } from "./Storage.js";
+import storage from './Storage';
 
-import * as utils from "../utils/utils.js";
+import * as utils from '../utils/utils';
 
 export default class List {
   constructor() {
@@ -13,13 +13,16 @@ export default class List {
     this.storage.pushToLocalStorage();
   }
 
+  getTodos(list) {
+    return this.storage.todos[list];
+  }
+
   getLists() {
     return Object.keys(this.storage.todos);
   }
 
   delete(list) {
     document.querySelector(`[data-name='${list}']`).remove();
-    storage.removeList(list);
+    this.storage.removeList(list);
   }
-  edit() {}
 }

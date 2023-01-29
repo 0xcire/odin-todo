@@ -30,7 +30,10 @@
     <div id="app">
       <div id="sidebar">
         <div class="header">
-          <h1>Todo</h1>
+          <div class="sidebar-header">
+            <h1>Todo</h1>
+            <i class="fa-solid fa-ellipsis-vertical hide-nav"></i>
+          </div>
           <p class="current-date"></p>
         </div>
         <div class="additions">
@@ -40,34 +43,43 @@
         <div id="lists"></div>
       </div>
       <div class="display">
-        <h3 class="current-list">All</h3>
+        <div class="heading">
+          <i class="fa-solid fa-ellipsis-vertical show-nav"></i>
+          <h3 class="current-list">All</h3>
+        </div>
         <div class="todos"></div>
       </div>
     </div>
     <div class="todo-form">
-      <form action="submit">
+      <form action="submit" data-form="todo">
         <div class="title">
           <label for="title">Todo</label>
-          <input type="text" name="title" id="title" />
+          <input type="text" name="title" id="title" required />
         </div>
         <div class="date">
           <label for="due">Due</label>
-          <input type="date" name="due" id="due" />
+          <input type="date" name="due" id="due" required />
         </div>
         <div class="list-select">
           <select name="list" id="list-dropdown">
             <!-- <option value="All">All</option> -->
           </select>
         </div>
-        <button type="submit">Add</button>
+        <button class="todo-form-btn" type="submit">Add</button>
+        <button class="todo-form-btn todo-form-cancel" type="button">
+          Cancel
+        </button>
       </form>
     </div>
     <div class="list-form">
-      <form action="submit">
+      <form id="list-form" class="list-inputs" action="submit" data-form="list">
         <label for="list">Project</label>
-        <input type="text" name="list" id="list" />
-        <button type="submit">Add</button>
+        <input type="text" name="list" id="list" required />
       </form>
+      <button class="list-form-btn" type="submit" form="list-form">Add</button>
+      <button class="list-form-btn list-form-cancel" type="button">
+        Cancel
+      </button>
     </div>
     <script type="module" src="./src/app.js"></script>
   </body>

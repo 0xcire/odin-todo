@@ -1,18 +1,21 @@
 #lists {
-  margin-top: 2rem;
   height: 100%;
-
   display: grid;
-  /* 2 col on larger displays */
   grid-template-columns: 1fr;
   grid-template-rows: repeat(auto-fill, 50px);
+  gap: 2rem;
+  margin-top: 4rem;
+  padding: 1rem;
+}
 
-  /*gap: 1rem;
-  padding: 1rem; */
+@media screen and (min-width: 1080px) {
+  #lists {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
 }
 
 .list {
-  /* cursor: pointer; */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,9 +23,13 @@
   padding: 0 2rem;
   border-radius: 5px;
 
-  -webkit-box-shadow: 4px 3px 6px 0px rgba(211, 211, 211, 1);
-  -moz-box-shadow: 4px 3px 6px 0px rgba(211, 211, 211, 1);
-  box-shadow: 4px 3px 6px 0px rgba(211, 211, 211, 1);
+  background-color: var(--secondary-color);
+  color: var(--tertiary-color);
+  font-weight: 700;
+}
+
+.description {
+  display: flex;
 }
 
 .list-name,
@@ -31,5 +38,7 @@
 }
 
 .how-many {
+  padding-left: 1rem;
   font-weight: 700;
+  color: var(--accent-color);
 }
