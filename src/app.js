@@ -47,7 +47,7 @@ const listController = () => {
     const delIcon = e.target.closest('.list-del');
     if (delIcon) {
       const listElement = delIcon.parentElement;
-      const activeList = utils.elDataName(listElement);
+      const activeList = listElement.dataset.name;
       if (activeList === 'All') return;
 
       state.list.delete(activeList);
@@ -122,7 +122,7 @@ const todoController = () => {
     if (e.target.closest('.delete')) {
       const todoEl = e.target.closest('.todo');
       const { id } = todoEl;
-      const list = utils.elDataName(todoEl);
+      const list = todoEl.dataset.name;
       state.todo.delete(id, list);
 
       const todos = state.todo.getTodos(list);
@@ -137,13 +137,13 @@ const todoController = () => {
   document.addEventListener('click', (e) => {
     if (e.target.closest('.list-name')) {
       const activeList = e.target.textContent;
-      const format = utils.addHyphen(activeList);
+      const dataListName = utils.addHyphen(activeList);
 
-      tV.updateTodoFormListSelection(activeList);
-      tV.updateTodoListTitle(activeList);
+      tV.updateTodoFormListSelection(dataListName);
+      tV.updateTodoListTitle(dataListName);
 
-      const todos = state.todo.getTodos(format);
-      tV.renderTodos(elements.todosWrapper, todos, format);
+      const todos = state.todo.getTodos(dataListName);
+      tV.renderTodos(elements.todosWrapper, todos, dataListName);
 
       if (window.innerWidth < 1080) {
         lV.hideMobileSidebar();

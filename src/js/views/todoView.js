@@ -106,13 +106,12 @@ export const resetTitleAndDate = (el) => {
 };
 
 export const updateTodoFormListSelection = (list) => {
-  const format = utils.addHyphen(list);
-  document.querySelector(`option[value='${format}']`).selected = true;
+  document.querySelector(`option[value='${list}']`).selected = true;
 };
 
 export const updateTodoListTitle = (list = 'All') => {
-  elements.currentList.dataset.name = utils.addHyphen(list);
-  elements.currentList.textContent = list;
+  elements.currentList.dataset.name = list;
+  elements.currentList.textContent = utils.addASpace(list);
 };
 
 export const attachTodoFormEvents = () => {

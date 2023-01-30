@@ -56,9 +56,9 @@ export const updateListCount = (count, list) => {
 
 export const createListOption = (name, el) => {
   const selection = document.createElement('option');
-  const formatName = utils.addASpace(name);
-  selection.setAttribute('value', name);
-  selection.textContent = formatName;
+  const dataName = utils.addHyphen(name);
+  selection.setAttribute('value', dataName);
+  selection.textContent = name;
 
   el.appendChild(selection);
 };

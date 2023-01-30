@@ -11,10 +11,10 @@ export default class Todo {
   }
 
   delete(id, list) {
-    const format = utils.addHyphen(list);
-    const index = this.storage.todos[format].findIndex((i) => i.id === id);
+    const dataName = utils.addHyphen(list);
+    const index = this.storage.todos[dataName].findIndex((i) => i.id === id);
 
-    this.storage.todos[format].splice(index, 1);
+    this.storage.todos[dataName].splice(index, 1);
 
     storage.pushToLocalStorage();
   }

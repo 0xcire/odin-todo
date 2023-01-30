@@ -8,8 +8,8 @@ export default class List {
   }
 
   addListToStorage(list) {
-    const formatList = utils.addHyphen(list);
-    this.storage.todos[formatList] = [];
+    const dataName = utils.addHyphen(list);
+    this.storage.todos[dataName] = [];
     this.storage.pushToLocalStorage();
   }
 
