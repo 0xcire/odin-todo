@@ -41,8 +41,8 @@
   margin: 0.5rem;
 }
 
-label[for="title"],
-label[for="due"] {
+label[for='title'],
+label[for='due'] {
   font-weight: 700;
   font-size: 18px;
 }
@@ -64,7 +64,7 @@ label[for="due"] {
   flex-direction: column;
 }
 
-label[for="list"] {
+label[for='list'] {
   font-weight: 700;
   font-size: 18px;
   text-align: left;
@@ -91,4 +91,9 @@ label[for="list"] {
   background-color: var(--secondary-color);
   color: var(--tertiary-color);
   cursor: pointer;
+}
+
+.todo-form-btn:focus,
+.list-form-btn:focus {
+  outline: 3px solid var(--secondary-color);
 }

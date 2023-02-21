@@ -152,9 +152,9 @@ const todoController = () => {
   });
 
   // switches todo lists in todo form so you see where your todo goes
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('option')) {
-      const name = e.target.closest('option').value;
+  elements.listSelect.addEventListener('change', (e) => {
+    if (e.target.matches('#list-dropdown')) {
+      const name = e.target.value;
       const format = utils.addASpace(name);
 
       tV.updateTodoListTitle(format);

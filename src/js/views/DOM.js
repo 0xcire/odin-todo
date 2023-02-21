@@ -10,6 +10,7 @@ const elements = {
   addList: document.querySelector('.add-project'),
   listFormDiv: document.querySelector('.list-form'),
   listForm: document.querySelector('.list-form form'),
+  listSelect: document.querySelector('#list-dropdown'),
   listFormInput: document.querySelector('#list'),
   listClose: document.querySelector('.list-form-cancel'),
   todoClose: document.querySelector('.todo-form-cancel'),
