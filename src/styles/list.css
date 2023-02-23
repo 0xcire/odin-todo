@@ -10,21 +10,29 @@
 
 @media screen and (min-width: 1080px) {
   #lists {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    padding: 0;
+    grid-template-columns: 45% 45%;
+    justify-content: center;
+    gap: 1rem;
   }
 }
 
-.list {
+.list,
+.list-delete-form,
+.options {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
 
-  padding: 0 2rem;
+.list {
+  position: relative;
+  padding: 0 1rem;
   border-radius: 5px;
 
   background-color: var(--secondary-color);
   color: var(--tertiary-color);
+  font-size: 1.4rem;
   font-weight: 700;
 }
 
@@ -38,7 +46,57 @@
 }
 
 .how-many {
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   font-weight: 700;
   color: var(--accent-color);
+}
+
+.list-delete-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 100%;
+  height: 100%;
+  padding: 0 0.5rem;
+
+  border-radius: 5px;
+  background-color: var(--secondary-color);
+  font-weight: 400;
+
+  transform: translate(0%, -50%);
+  transition: all 0.25s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.show {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+  pointer-events: all;
+}
+
+.options-btn {
+  padding: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.fa-check {
+  margin-right: 0.5rem;
+}
+
+.options-btn {
+  padding: 1rem;
+}
+@media screen and (min-width: 1080px) {
+  .fa-check {
+    margin: 0;
+  }
+}
+
+.options-btn:hover {
+  transition: all 0.35s ease;
+  background-color: var(--tertiary-color);
+  color: var(--secondary-color);
 }

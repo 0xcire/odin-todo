@@ -63,4 +63,15 @@ export default class Todo {
   getTotalTodos(list) {
     return this.storage.todos[list].length;
   }
+
+  addToCompleted(list, id) {
+    // find index
+    const index = this.storage.todos[list].findIndex((todo) => todo.id === id);
+    // pull out obj
+    const completed = this.storage.todos[list].splice(index, 1);
+    // push to completed
+    this.storage.todos.Complete.push(completed[0]);
+    this.storage.pushToLocalStorage();
+    console.log(completed);
+  }
 }

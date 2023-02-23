@@ -1,6 +1,6 @@
-@import "./list.css";
-@import "./todo.css";
-@import "./forms.css";
+@import './list.css';
+@import './todo.css';
+@import './forms.css';
 
 :root {
   --base-color: #2f394d;
@@ -25,7 +25,7 @@ body {
 }
 
 /* * {
-  border: 1px solid red;
+  outline: 1px solid red;
 } */
 
 /* layout */

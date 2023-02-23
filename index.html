@@ -40,7 +40,15 @@
           <button class="add-todo" type="button">add todo</button>
           <button class="add-project" type="button">add project</button>
         </div>
-        <div id="lists"></div>
+        <div id="lists">
+          <div class="list">
+            <div class="description">
+              <p class="list-name">Completed</p>
+              <p class="how-many">0</p>
+            </div>
+            <i class="list-del fa-solid fa-trash"></i>
+          </div>
+        </div>
       </div>
       <div class="display">
         <div class="heading">
@@ -74,7 +82,7 @@
     <div class="list-form">
       <form id="list-form" class="list-inputs" action="submit" data-form="list">
         <label for="list">Project</label>
-        <input type="text" name="list" id="list" required />
+        <input type="text" name="list" id="list" maxlength="8" required />
       </form>
       <button class="list-form-btn" type="submit" form="list-form">Add</button>
       <button class="list-form-btn list-form-cancel" type="button">

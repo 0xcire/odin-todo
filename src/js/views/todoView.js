@@ -106,6 +106,7 @@ export const resetTitleAndDate = (el) => {
 };
 
 export const updateTodoFormListSelection = (list) => {
+  if (list === 'Complete') return;
   document.querySelector(`option[value='${list}']`).selected = true;
 };
 

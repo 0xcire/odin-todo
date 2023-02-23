@@ -28,6 +28,8 @@ export const renderLists = (el, array, storage) => {
     const description = document.createElement('div');
     description.classList.add('description');
 
+    // const
+
     const listName = document.createElement('p');
     listName.classList.add('list-name');
 
@@ -47,6 +49,32 @@ export const renderLists = (el, array, storage) => {
     list.appendChild(del);
 
     el.appendChild(list);
+
+    const deleteForm = document.createElement('div');
+    deleteForm.classList.add('list-delete-form');
+
+    const p = document.createElement('p');
+    p.textContent =
+      list.dataset.name === 'All' || list.dataset.name === 'Complete'
+        ? 'clear?'
+        : 'delete?';
+
+    const options = document.createElement('div');
+    options.classList.add('options');
+    const yes = document.createElement('i');
+    yes.classList.add('fa-solid', 'fa-check', 'options-btn');
+    // yes.setAttribute('role', 'button');
+    const no = document.createElement('i');
+    no.classList.add('fa-solid', 'fa-xmark', 'options-btn');
+    // no.setAttribute('role', 'button');
+    options.appendChild(yes);
+    options.appendChild(no);
+
+    // deleteForm.append(p, options);
+    deleteForm.appendChild(p);
+    deleteForm.appendChild(options);
+
+    list.appendChild(deleteForm);
   }
 };
 
@@ -55,6 +83,7 @@ export const updateListCount = (count, list) => {
 };
 
 export const createListOption = (name, el) => {
+  if (name === 'Complete') return;
   const selection = document.createElement('option');
   const dataName = utils.addHyphen(name);
   selection.setAttribute('value', dataName);
@@ -73,6 +102,10 @@ export const showMobileSidebar = () => {
 
 export const hideMobileSidebar = () => {
   elements.sidebar.style.transform = 'translate(-100%, 0)';
+};
+
+export const toggleListDeleteForm = (element) => {
+  element.classList.toggle('show');
 };
 
 export const attachMobileViewEvents = () => {

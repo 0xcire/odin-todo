@@ -13,8 +13,13 @@ export default class List {
     this.storage.pushToLocalStorage();
   }
 
-  getTodos(list) {
+  getTodos(list = 'All') {
     return this.storage.todos[list];
+  }
+
+  clearTodos(list = 'All') {
+    this.storage.todos[list] = [];
+    this.storage.pushToLocalStorage();
   }
 
   getLists() {

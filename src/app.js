@@ -45,11 +45,27 @@ const listController = () => {
   // handle list delete
   document.addEventListener('click', (e) => {
     const delIcon = e.target.closest('.list-del');
+    let listElement;
+    let activeList;
     if (delIcon) {
-      const listElement = delIcon.parentElement;
-      const activeList = listElement.dataset.name;
-      if (activeList === 'All') return;
+      lV.toggleListDeleteForm(e.target.parentElement.lastChild);
+    }
 
+    if (e.target.matches('.fa-check')) {
+      listElement = e.target.parentElement.parentElement.parentElement;
+      activeList = listElement.dataset.name;
+      // console.log(listElement);
+      if (activeList === 'All' || activeList === 'Complete') {
+        state.list.clearTodos(activeList);
+        tV.renderTodos(elements.todosWrapper, []);
+        lV.toggleListDeleteForm(e.target.parentElement.parentElement);
+        lV.updateListCount(state.todo.getTotalTodos(activeList), activeList);
+        // delete all all todos
+        // 're render'
+        return;
+      }
+
+      lV.toggleListDeleteForm(e.target.parentElement.parentElement);
       state.list.delete(activeList);
       lV.removeListOption(activeList);
 
@@ -58,11 +74,16 @@ const listController = () => {
       tV.renderTodos(elements.todosWrapper, todos);
       tV.updateTodoListTitle();
     }
+
+    if (e.target.matches('.fa-xmark')) {
+      lV.toggleListDeleteForm(e.target.parentElement.parentElement);
+    }
   });
 
   // renders existing lists on page load
   document.addEventListener('DOMContentLoaded', () => {
     const lists = state.list.getLists();
+    console.log(lists);
     lV.renderLists(listsWrapper, lists, storage);
 
     lists.forEach((list) => {
@@ -113,6 +134,15 @@ const todoController = () => {
         tV.disableEdit(inputs);
         const values = state.todo.constructor.getUpdatedValues(inputs);
         state.todo.updateEdit(id, list, values);
+        console.log(values);
+        if (values[2] === true) {
+          console.log('to completed');
+          state.todo.addToCompleted(utils.addHyphen(list), id);
+          const todos = state.todo.getTodos(list);
+          tV.renderTodos(elements.todosWrapper, todos, list);
+          lV.updateListCount(state.todo.getTotalTodos(list), list);
+          lV.updateListCount(state.todo.getTotalTodos('Complete'), 'Complete');
+        }
       }
     }
   });
