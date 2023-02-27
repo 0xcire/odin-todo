@@ -27,51 +27,18 @@
     <link rel="stylesheet" href="./src/styles/app.css" />
   </head>
   <body>
-    <div id="app">
-      <div id="sidebar">
-        <div class="header">
-          <div class="sidebar-header">
-            <h1>Todo</h1>
-            <i class="fa-solid fa-ellipsis-vertical hide-nav"></i>
-          </div>
-          <p class="current-date"></p>
-        </div>
-        <div class="additions">
-          <button class="add-todo" type="button">add todo</button>
-          <button class="add-project" type="button">add project</button>
-        </div>
-        <div id="lists">
-          <div class="list">
-            <div class="description">
-              <p class="list-name">Completed</p>
-              <p class="how-many">0</p>
-            </div>
-            <i class="list-del fa-solid fa-trash"></i>
-          </div>
-        </div>
-      </div>
-      <div class="display">
-        <div class="heading">
-          <i class="fa-solid fa-ellipsis-vertical show-nav"></i>
-          <h3 class="current-list">All</h3>
-        </div>
-        <div class="todos"></div>
-      </div>
-    </div>
     <div class="todo-form">
       <form action="submit" data-form="todo">
         <div class="title">
           <label for="title">Todo</label>
-          <input type="text" name="title" id="title" required />
+          <input type="text" name="title" id="title" required tabindex="0" />
         </div>
         <div class="date">
           <label for="due">Due</label>
           <input type="date" name="due" id="due" required />
         </div>
         <div class="list-select">
-          <select name="list" id="list-dropdown">
-            <!-- <option value="All">All</option> -->
-          </select>
+          <select name="list" id="list-dropdown"></select>
         </div>
         <button class="todo-form-btn" type="submit">Add</button>
         <button class="todo-form-btn todo-form-cancel" type="button">
@@ -88,6 +55,30 @@
       <button class="list-form-btn list-form-cancel" type="button">
         Cancel
       </button>
+    </div>
+
+    <div id="app">
+      <div id="sidebar">
+        <div class="header">
+          <div class="sidebar-header">
+            <h1>Todo</h1>
+            <i class="fa-solid fa-ellipsis-vertical hide-nav"></i>
+          </div>
+          <p class="current-date"></p>
+        </div>
+        <div class="additions">
+          <button class="add-todo" type="button">add todo</button>
+          <button class="add-project" type="button">add project</button>
+        </div>
+        <div id="lists"></div>
+      </div>
+      <div class="display">
+        <div class="heading">
+          <i class="fa-solid fa-ellipsis-vertical show-nav"></i>
+          <h3 class="current-list">All</h3>
+        </div>
+        <div class="todos"></div>
+      </div>
     </div>
     <script type="module" src="./src/app.js"></script>
   </body>

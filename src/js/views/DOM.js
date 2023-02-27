@@ -16,7 +16,6 @@ const elements = {
   todoClose: document.querySelector('.todo-form-cancel'),
   todosWrapper: document.querySelector('.todos'),
   listsWrapper: document.querySelector('#lists'),
-  todoCount: document.querySelector('.how-many'),
   listDropdown: document.querySelector('#list-dropdown'),
 };
 

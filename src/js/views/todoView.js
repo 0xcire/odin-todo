@@ -1,9 +1,10 @@
 import elements from './DOM';
 import * as utils from '../utils/utils';
 
-export const showForm = (el) => {
-  const todoForm = el;
-  todoForm.style.display = 'block';
+export const showForm = (el, formEl) => {
+  const todoFormDiv = el;
+  todoFormDiv.style.display = 'block';
+  formEl[0].focus();
 };
 
 export const hideForm = (el) => {
@@ -58,6 +59,7 @@ export const renderTodos = (el, todoArray, list = 'All') => {
     done.setAttribute('id', 'done');
 
     const edit = document.createElement('i');
+    edit.tabIndex = 0;
     edit.classList.add('edit', 'fa-solid', 'fa-pen-to-square');
 
     const del = document.createElement('button');
@@ -119,7 +121,7 @@ export const attachTodoFormEvents = () => {
   const { addTodo, todoClose, todoForm, todoFormDiv, listFormDiv } = elements;
   addTodo.addEventListener('click', () => {
     if (listFormDiv.style.display === 'block') return;
-    showForm(todoFormDiv);
+    showForm(todoFormDiv, todoForm);
     if (window.innerWidth < 1080) {
       elements.sidebar.style.transform = 'translate(-100%, 0)';
     }
@@ -127,5 +129,54 @@ export const attachTodoFormEvents = () => {
   todoClose.addEventListener('click', () => {
     hideForm(todoFormDiv);
     todoForm.reset();
+  });
+};
+
+export const bindTodoSubmit = (callback) => {
+  elements.todoForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    callback(e);
+  });
+};
+
+export const bindTodoEdit = (callback) => {
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.edit')) {
+      callback(e);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.closest('.edit')) {
+      callback(e);
+    }
+  });
+};
+
+export const bindTodoDelete = (callback) => {
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.delete')) {
+      callback(e);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('.delete')) {
+      callback(e);
+    }
+  });
+};
+
+// [] no keyboard support possible?
+export const bindTodoSelectChange = (callback) => {
+  elements.listSelect.addEventListener('change', (e) => {
+    // if (e.target.matches('#list-dropdown')) {
+    callback(e);
+    // }
+  });
+};
+
+export const bindTodoRender = (callback) => {
+  document.addEventListener('DOMContentLoaded', () => {
+    callback();
   });
 };

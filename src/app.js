@@ -22,87 +22,144 @@ document.addEventListener('DOMContentLoaded', () => {
   storage.getTodosFromLocal(elements.todosWrapper);
 });
 
+document.addEventListener(
+  'focusin',
+  () => {
+    console.log('focused: ', document.activeElement);
+  },
+  true
+);
+
+// rerender function | getTodos | renderTodos | updateListCount |
+
 const listController = () => {
   const { listFormInput, listsWrapper, listDropdown } = elements;
-  lV.attachListFormEvents();
-  lV.attachMobileViewEvents();
 
-  // handle new list form submission
-  elements.listForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  const handleListSubmit = (e) => {
+    state.list.addListToStorage(listFormInput.value);
 
-    const name = listFormInput.value;
-    state.list.addListToStorage(name);
+    const counts = state.list.getListCounts();
+    lV.renderLists(listsWrapper, state.list.getLists(), counts);
 
+    lV.createListOption(listFormInput.value, listDropdown);
     lV.hideForm(e.target.parentElement);
-    const lists = state.list.getLists();
-    lV.renderLists(listsWrapper, lists, storage);
 
-    lV.createListOption(name, listDropdown);
     e.target.reset();
-  });
+  };
 
-  // handle list delete
-  document.addEventListener('click', (e) => {
+  const handleShowListDeleteOptions = (e) => {
+    lV.toggleListDeleteForm(e.target.parentElement.lastChild);
+
+    // []?
     const delIcon = e.target.closest('.list-del');
+    const listBtns = [delIcon.previousSibling.children[0], delIcon];
+    const optionBtns = delIcon.nextSibling.children[1].children;
+    lV.disableTabbing(listBtns);
+    lV.enableTabbing(optionBtns);
+  };
+
+  // [] clean up names || activeList and currentList ex
+  // [] repeating disable and enableTabbing
+  const handleListDeleteOptions = (e) => {
     let listElement;
     let activeList;
-    if (delIcon) {
-      lV.toggleListDeleteForm(e.target.parentElement.lastChild);
-    }
+    const optionBtns = [];
+    const listBtns = [];
 
+    // delete | clear
     if (e.target.matches('.fa-check')) {
-      listElement = e.target.parentElement.parentElement.parentElement;
+      listElement = e.target.closest('.list');
       activeList = listElement.dataset.name;
-      // console.log(listElement);
+
+      // just clearing out list
       if (activeList === 'All' || activeList === 'Complete') {
+        // [] refactor
         state.list.clearTodos(activeList);
         tV.renderTodos(elements.todosWrapper, []);
-        lV.toggleListDeleteForm(e.target.parentElement.parentElement);
+
         lV.updateListCount(state.todo.getTotalTodos(activeList), activeList);
-        // delete all all todos
-        // 're render'
+        lV.toggleListDeleteForm(e.target.parentElement.parentElement);
+
+        optionBtns.push(e.target, e.target.nextSibling);
+        const currentList = e.target.closest('.list');
+        listBtns.push(
+          currentList.children[0].children[0],
+          currentList.children[1]
+        );
+        lV.enableTabbing(listBtns);
+        lV.disableTabbing(optionBtns);
         return;
       }
-
+      // delete all together
       lV.toggleListDeleteForm(e.target.parentElement.parentElement);
       state.list.delete(activeList);
       lV.removeListOption(activeList);
-
-      // list is deleted so show default view; All list with its todos
-      const todos = state.todo.getTodos();
-      tV.renderTodos(elements.todosWrapper, todos);
-      tV.updateTodoListTitle();
+      optionBtns.push(e.target, e.target.nextSibling);
+      const currentList = e.target.closest('.list');
+      listBtns.push(
+        currentList.children[0].children[0],
+        currentList.children[1]
+      );
+      lV.enableTabbing(listBtns);
+      lV.disableTabbing(optionBtns);
     }
 
+    // exit out of submenu
     if (e.target.matches('.fa-xmark')) {
       lV.toggleListDeleteForm(e.target.parentElement.parentElement);
+      optionBtns.push(e.target, e.target.previousSibling);
+      const currentList = e.target.closest('.list');
+      listBtns.push(
+        currentList.children[0].children[0],
+        currentList.children[1]
+      );
+      lV.enableTabbing(listBtns);
+      lV.disableTabbing(optionBtns);
     }
-  });
+  };
 
-  // renders existing lists on page load
-  document.addEventListener('DOMContentLoaded', () => {
+  const handleListRender = () => {
     const lists = state.list.getLists();
-    console.log(lists);
-    lV.renderLists(listsWrapper, lists, storage);
-
+    const counts = state.list.getListCounts();
+    lV.renderLists(listsWrapper, lists, counts);
+    // []
     lists.forEach((list) => {
       lV.createListOption(list, listDropdown);
     });
-  });
+  };
+
+  const handleListSwitch = (e) => {
+    const activeList = e.target.textContent;
+    const dataListName = utils.addHyphen(activeList);
+
+    tV.updateTodoFormListSelection(dataListName);
+    tV.updateTodoListTitle(dataListName);
+
+    const todos = state.todo.getTodos(dataListName);
+    tV.renderTodos(elements.todosWrapper, todos, dataListName);
+
+    if (window.innerWidth < 1080) {
+      lV.hideMobileSidebar();
+    }
+  }; // app?
+
+  lV.bindListFormEvents();
+  lV.bindMobileViewEvents();
+  // []
+  lV.bindListSubmit(handleListSubmit);
+  lV.bindShowListDeleteOptions(handleShowListDeleteOptions);
+  lV.bindListDeleteOptions(handleListDeleteOptions);
+  lV.bindListRender(handleListRender);
+  lV.bindListSwitch(handleListSwitch);
 };
 listController();
 
-// todoController
 const todoController = () => {
   const { todoForm, todosWrapper } = elements;
-
+  // []?
   tV.attachTodoFormEvents();
 
-  // handleFormSubmit
-  todoForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
+  const handleTodoSubmit = (e) => {
     const data = new FormData(todoForm);
     state.todo.saveData(data);
     const list = data.get('list');
@@ -113,92 +170,73 @@ const todoController = () => {
 
     const count = state.todo.getTotalTodos(list);
     lV.updateListCount(count, list);
-
     tV.resetTitleAndDate(todoForm);
-  });
+  };
+  // query selector for all these el.children.parent.grandkids..?
+  const handleTodoEdit = (e) => {
+    const parent = e.target.closest('.todo');
+    const { id } = parent;
+    const list = document.querySelector('.current-list').textContent;
+    const titleAndDue = parent.children[0].children;
+    const checked = parent.children[1].children[0];
+    // []?
+    const inputs = [].slice.call(titleAndDue);
+    inputs.push(checked);
 
-  // handleEditTodo
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.edit')) {
-      const parent = e.target.closest('.todo');
-      const { id } = parent;
-      const list = document.querySelector('.current-list').textContent;
-      const titleAndDue = parent.children[0].children;
-      const checked = parent.children[1].children[0];
-      const inputs = [].slice.call(titleAndDue);
-      inputs.push(checked);
-
-      if (titleAndDue[0].disabled) {
-        tV.enableEdit(inputs);
-      } else {
-        tV.disableEdit(inputs);
-        const values = state.todo.constructor.getUpdatedValues(inputs);
-        state.todo.updateEdit(id, list, values);
-        console.log(values);
-        if (values[2] === true) {
-          console.log('to completed');
-          state.todo.addToCompleted(utils.addHyphen(list), id);
-          const todos = state.todo.getTodos(list);
-          tV.renderTodos(elements.todosWrapper, todos, list);
-          lV.updateListCount(state.todo.getTotalTodos(list), list);
-          lV.updateListCount(state.todo.getTotalTodos('Complete'), 'Complete');
-        }
+    if (titleAndDue[0].disabled) {
+      tV.enableEdit(inputs);
+    } else {
+      tV.disableEdit(inputs);
+      const values = state.todo.constructor.getUpdatedValues(inputs);
+      state.todo.updateEdit(id, list, values);
+      // [] refactor: pushing to completed
+      // [] need to keep list and index meta data to re add if unchecking completed
+      // [] also all list should be a compilation of all lists
+      // instead of being its own list
+      // or just rename to default or something
+      if (values[2] === true) {
+        state.todo.addToCompleted(utils.addHyphen(list), id);
+        const todos = state.todo.getTodos(list);
+        tV.renderTodos(elements.todosWrapper, todos, list);
+        lV.updateListCount(state.todo.getTotalTodos(list), list);
+        lV.updateListCount(state.todo.getTotalTodos('Complete'), 'Complete');
       }
     }
-  });
+  };
 
-  // handleDeleteTodo
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.delete')) {
-      const todoEl = e.target.closest('.todo');
-      const { id } = todoEl;
-      const list = todoEl.dataset.name;
-      state.todo.delete(id, list);
+  const handleTodoDelete = (e) => {
+    const todoEl = e.target.closest('.todo');
+    const { id } = todoEl;
+    const list = todoEl.dataset.name;
+    state.todo.delete(id, list);
 
-      const todos = state.todo.getTodos(list);
-      tV.renderTodos(elements.todosWrapper, todos, list);
+    const todos = state.todo.getTodos(list);
+    tV.renderTodos(elements.todosWrapper, todos, list);
 
-      const count = state.todo.getTotalTodos(list);
-      lV.updateListCount(count, list);
-    }
-  });
+    const count = state.todo.getTotalTodos(list);
+    lV.updateListCount(count, list);
+  };
 
-  // change todo lists
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.list-name')) {
-      const activeList = e.target.textContent;
-      const dataListName = utils.addHyphen(activeList);
+  const handleTodoSelectChange = (e) => {
+    const name = e.target.value;
+    const format = utils.addASpace(name);
 
-      tV.updateTodoFormListSelection(dataListName);
-      tV.updateTodoListTitle(dataListName);
+    tV.updateTodoListTitle(format);
+    const todos = state.todo.getTodos(name);
+    tV.renderTodos(elements.todosWrapper, todos, name);
+  }; // app?
 
-      const todos = state.todo.getTodos(dataListName);
-      tV.renderTodos(elements.todosWrapper, todos, dataListName);
-
-      if (window.innerWidth < 1080) {
-        lV.hideMobileSidebar();
-      }
-    }
-  });
-
-  // switches todo lists in todo form so you see where your todo goes
-  elements.listSelect.addEventListener('change', (e) => {
-    if (e.target.matches('#list-dropdown')) {
-      const name = e.target.value;
-      const format = utils.addASpace(name);
-
-      tV.updateTodoListTitle(format);
-      const todos = state.todo.getTodos(name);
-      tV.renderTodos(elements.todosWrapper, todos, name);
-    }
-  });
-
-  // render todos on page load
-  // always defaults back to all list currently
-  document.addEventListener('DOMContentLoaded', () => {
+  const handleTodoRender = () => {
+    // [] save last list in state?
     const todos = state.todo.getTodos();
     tV.renderTodos(elements.todosWrapper, todos);
     tV.updateTodoListTitle();
-  });
+  };
+
+  tV.bindTodoSubmit(handleTodoSubmit);
+  tV.bindTodoEdit(handleTodoEdit);
+  tV.bindTodoDelete(handleTodoDelete);
+  tV.bindTodoSelectChange(handleTodoSelectChange);
+  tV.bindTodoRender(handleTodoRender);
 };
 todoController();

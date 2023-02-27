@@ -72,6 +72,5 @@ export default class Todo {
     // push to completed
     this.storage.todos.Complete.push(completed[0]);
     this.storage.pushToLocalStorage();
-    console.log(completed);
   }
 }

@@ -30,4 +30,11 @@ export default class List {
     document.querySelector(`[data-name='${list}']`).remove();
     this.storage.removeList(list);
   }
+
+  getListCounts() {
+    const counts = Object.keys(this.storage.todos).map(
+      (list) => this.storage.todos[list].length
+    );
+    return counts;
+  }
 }

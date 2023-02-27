@@ -6,19 +6,21 @@ export const hideForm = (el) => {
   listForm.style.display = 'none';
 };
 
-export const showForm = (el) => {
-  const listForm = el;
-  listForm.style.display = 'block';
+export const showForm = (el, formEl) => {
+  const listFormDiv = el;
+  listFormDiv.style.display = 'block';
+  formEl.children[1].focus();
+  // console.log(formEl.children[1]);
 };
 
-export const renderLists = (el, array, storage) => {
-  const listArray = array;
+export const renderLists = (el, listArr, countsArr) => {
+  const listArray = listArr;
   const todoContainer = el;
   todoContainer.innerHTML = '';
 
   for (let i = 0; i < listArray.length; i += 1) {
     const name = listArray[i];
-    const listLength = storage.todos[listArray[i]].length;
+    const listLength = countsArr[i];
     const displayName = utils.addASpace(name);
 
     const list = document.createElement('div');
@@ -31,6 +33,7 @@ export const renderLists = (el, array, storage) => {
     // const
 
     const listName = document.createElement('p');
+    listName.tabIndex = 0;
     listName.classList.add('list-name');
 
     const listTodoCount = document.createElement('p');
@@ -38,6 +41,7 @@ export const renderLists = (el, array, storage) => {
     listTodoCount.textContent = listLength;
 
     const del = document.createElement('i');
+    del.tabIndex = 0;
     del.classList.add('list-del', 'fa-solid', 'fa-trash');
 
     listName.textContent = displayName;
@@ -62,9 +66,11 @@ export const renderLists = (el, array, storage) => {
     const options = document.createElement('div');
     options.classList.add('options');
     const yes = document.createElement('i');
+    // yes.tabIndex = '0';
     yes.classList.add('fa-solid', 'fa-check', 'options-btn');
     // yes.setAttribute('role', 'button');
     const no = document.createElement('i');
+    // no.tabIndex = '0';
     no.classList.add('fa-solid', 'fa-xmark', 'options-btn');
     // no.setAttribute('role', 'button');
     options.appendChild(yes);
@@ -92,6 +98,12 @@ export const createListOption = (name, el) => {
   el.appendChild(selection);
 };
 
+// export const createListOptions = (lists) => {
+//   lists.forEach(list => {
+
+//   })
+// }
+
 export const removeListOption = (value) => {
   document.querySelector(`option[value=${value}]`).remove();
 };
@@ -108,7 +120,21 @@ export const toggleListDeleteForm = (element) => {
   element.classList.toggle('show');
 };
 
-export const attachMobileViewEvents = () => {
+export const enableTabbing = (nodes) => {
+  for (let i = 0; i < nodes.length; i += 1) {
+    const domNodes = nodes;
+    domNodes[i].tabIndex = 0;
+  }
+};
+
+export const disableTabbing = (nodes) => {
+  for (let i = 0; i < nodes.length; i += 1) {
+    const domNodes = nodes;
+    domNodes[i].tabIndex = -1;
+  }
+};
+
+export const bindMobileViewEvents = () => {
   elements.showNav.addEventListener('click', () => {
     showMobileSidebar();
   });
@@ -117,14 +143,80 @@ export const attachMobileViewEvents = () => {
   });
 };
 
-export const attachListFormEvents = () => {
+export const bindListFormEvents = () => {
   const { addList, listClose, listForm, listFormDiv, todoFormDiv } = elements;
   addList.addEventListener('click', () => {
     if (todoFormDiv.style.display === 'block') return;
-    showForm(listFormDiv);
+    showForm(listFormDiv, listForm);
   });
   listClose.addEventListener('click', () => {
     hideForm(listFormDiv);
     listForm.reset();
+  });
+};
+
+export const bindListSubmit = (callback) => {
+  elements.listForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    callback(e);
+  });
+};
+
+export const bindListDelete = (callback) => {
+  document.addEventListener('click', (e) => {
+    const delIcon = e.target.closest('.list-del');
+    if (delIcon) {
+      callback(e, delIcon);
+    }
+    // callback(e);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      callback(e);
+    }
+  });
+};
+
+export const bindShowListDeleteOptions = (callback) => {
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.list-del')) {
+      callback(e);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.closest('.list-del')) {
+      callback(e);
+    }
+  });
+};
+
+export const bindListDeleteOptions = (callback) => {
+  document.addEventListener('click', (e) => {
+    callback(e);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      callback(e);
+    }
+  });
+};
+
+export const bindListSwitch = (callback) => {
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.list-name')) {
+      callback(e);
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('.list-name')) {
+      callback(e);
+    }
+  });
+};
+
+export const bindListRender = (callback) => {
+  document.addEventListener('DOMContentLoaded', (e) => {
+    callback(e);
   });
 };
