@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Simple todo application to manage multiple projects."
+    />
+    <title>Todo</title>
+
+    <!-- Google Fonts -- Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- font awesome -->
+    <script
+      src="https://kit.fontawesome.com/7177ae3b0b.js"
+      crossorigin="anonymous"
+    ></script>
+
+    
+    <script type="module" crossorigin src="./assets/index-0935fda7.js"></script>
+    <link rel="stylesheet" href="./assets/index-546349d7.css">
+  </head>
+  <body>
+    <div class="todo-form">
+      <form action="submit" data-form="todo">
+        <div class="title">
+          <label for="title">Todo</label>
+          <input type="text" name="title" id="title" required tabindex="0" />
+        </div>
+        <div class="date">
+          <label for="due">Due</label>
+          <input type="date" name="due" id="due" required />
+        </div>
+        <div class="list-select">
+          <select name="list" id="list-dropdown"></select>
+        </div>
+        <button class="todo-form-btn" type="submit">Add</button>
+        <button class="todo-form-btn todo-form-cancel" type="button">
+          Cancel
+        </button>
+      </form>
+    </div>
+    <div class="list-form">
+      <form id="list-form" class="list-inputs" action="submit" data-form="list">
+        <label for="list">Project</label>
+        <input type="text" name="list" id="list" maxlength="8" required />
+      </form>
+      <button class="list-form-btn" type="submit" form="list-form">Add</button>
+      <button class="list-form-btn list-form-cancel" type="button">
+        Cancel
+      </button>
+    </div>
+
+    <div id="app">
+      <div id="sidebar">
+        <div class="header">
+          <div class="sidebar-header">
+            <h1>Todo</h1>
+            <i class="fa-solid fa-ellipsis-vertical hide-nav"></i>
+          </div>
+          <p class="current-date"></p>
+        </div>
+        <div class="additions">
+          <button class="add-todo" type="button">add todo</button>
+          <button class="add-project" type="button">add project</button>
+        </div>
+        <div id="lists"></div>
+      </div>
+      <div class="display">
+        <div class="heading">
+          <i class="fa-solid fa-ellipsis-vertical show-nav"></i>
+          <h3 class="current-list">Todos</h3>
+        </div>
+        <div class="todos"></div>
+      </div>
+    </div>
+    
+  </body>
+</html>
