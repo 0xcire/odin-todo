@@ -1,7 +1,8 @@
 class Storage {
   constructor() {
+    this.last = 'Todos';
     this.todos = {
-      All: [],
+      Todos: [],
       Complete: [],
     };
   }
@@ -23,19 +24,30 @@ class Storage {
   }
 
   setDataFromLocal(data) {
-    this.todos = JSON.parse(data);
+    this.last = data.last;
+    this.todos = data.todos;
   }
 
   pushToLocalStorage() {
-    localStorage.setItem('todos', JSON.stringify(this.todos));
+    Object.keys(this).forEach((key) => {
+      localStorage.setItem(key, JSON.stringify(this[key]));
+    });
   }
 
-  getTodosFromLocal(el) {
-    const todoContainer = el;
-    const data = localStorage.getItem('todos');
+  getDataFromLocal() {
+    const last = localStorage.getItem('last');
+    const todos = localStorage.getItem('todos');
+
+    const data = {
+      last: JSON.parse(last),
+      todos: JSON.parse(todos),
+    };
 
     if (this.constructor.localIsEmpty()) {
-      todoContainer.innerHTML = '';
+      this.todos = {
+        Todos: [],
+        Complete: [],
+      };
     } else {
       this.setDataFromLocal(data);
     }

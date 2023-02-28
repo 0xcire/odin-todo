@@ -32,7 +32,7 @@ export const disableEdit = (elementArray) => {
   /* eslint-enable no-param-reassign */
 };
 
-export const renderTodos = (el, todoArray, list = 'All') => {
+export const renderTodos = (el, todoArray, list = 'Todos') => {
   const container = el;
   container.innerHTML = '';
   const todos = todoArray;
@@ -51,12 +51,15 @@ export const renderTodos = (el, todoArray, list = 'All') => {
 
     const title = document.createElement('input');
     title.setAttribute('id', 'todo-title');
+    title.dataset.name = `${todos[i].id}-input`;
 
     const due = document.createElement('input');
     due.setAttribute('id', 'todo-date');
+    due.dataset.name = `${todos[i].id}-input`;
 
     const done = document.createElement('input');
     done.setAttribute('id', 'done');
+    done.dataset.name = `${todos[i].id}-input`;
 
     const edit = document.createElement('i');
     edit.tabIndex = 0;
@@ -112,12 +115,17 @@ export const updateTodoFormListSelection = (list) => {
   document.querySelector(`option[value='${list}']`).selected = true;
 };
 
-export const updateTodoListTitle = (list = 'All') => {
+export const updateTodoListTitle = (list = 'Todos') => {
   elements.currentList.dataset.name = list;
   elements.currentList.textContent = utils.addASpace(list);
 };
 
-export const attachTodoFormEvents = () => {
+export const updateTodoView = (title, todos) => {
+  updateTodoListTitle(title);
+  renderTodos(elements.todosWrapper, todos, title);
+};
+
+export const bindTodoFormEvents = () => {
   const { addTodo, todoClose, todoForm, todoFormDiv, listFormDiv } = elements;
   addTodo.addEventListener('click', () => {
     if (listFormDiv.style.display === 'block') return;
@@ -166,16 +174,13 @@ export const bindTodoDelete = (callback) => {
   });
 };
 
-// [] no keyboard support possible?
 export const bindTodoSelectChange = (callback) => {
   elements.listSelect.addEventListener('change', (e) => {
-    // if (e.target.matches('#list-dropdown')) {
     callback(e);
-    // }
   });
 };
 
-export const bindTodoRender = (callback) => {
+export const bindTodoOnLoad = (callback) => {
   document.addEventListener('DOMContentLoaded', () => {
     callback();
   });

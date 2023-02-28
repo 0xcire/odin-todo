@@ -65,7 +65,7 @@
   font-weight: 400;
 
   transform: translate(0%, -50%);
-  transition: all 0.25s ease;
+  transition: all 0.15s ease;
   pointer-events: none;
   opacity: 0;
 }

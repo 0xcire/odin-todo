@@ -33,7 +33,7 @@ export default class Todo {
   }
 
   static getUpdatedValues(inputs) {
-    const values = inputs.map((input) => {
+    const values = [...inputs].map((input) => {
       if (input.type === 'checkbox') {
         return input.checked;
       }
@@ -56,7 +56,7 @@ export default class Todo {
     return todo;
   }
 
-  getTodos(list = 'All') {
+  getTodos(list = 'Todos') {
     return this.storage.todos[list];
   }
 
@@ -65,11 +65,8 @@ export default class Todo {
   }
 
   addToCompleted(list, id) {
-    // find index
     const index = this.storage.todos[list].findIndex((todo) => todo.id === id);
-    // pull out obj
     const completed = this.storage.todos[list].splice(index, 1);
-    // push to completed
     this.storage.todos.Complete.push(completed[0]);
     this.storage.pushToLocalStorage();
   }

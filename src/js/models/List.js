@@ -13,11 +13,11 @@ export default class List {
     this.storage.pushToLocalStorage();
   }
 
-  getTodos(list = 'All') {
+  getTodos(list = 'Todos') {
     return this.storage.todos[list];
   }
 
-  clearTodos(list = 'All') {
+  clearTodos(list = 'Todos') {
     this.storage.todos[list] = [];
     this.storage.pushToLocalStorage();
   }
@@ -27,7 +27,6 @@ export default class List {
   }
 
   delete(list) {
-    document.querySelector(`[data-name='${list}']`).remove();
     this.storage.removeList(list);
   }
 
@@ -37,4 +36,13 @@ export default class List {
     );
     return counts;
   }
+
+  setLastViewedList(list) {
+    this.storage.last = list;
+    this.storage.pushToLocalStorage();
+  }
+
+  // getLastViewedList() {
+  //   return;
+  // }
 }

@@ -10,7 +10,6 @@ export const showForm = (el, formEl) => {
   const listFormDiv = el;
   listFormDiv.style.display = 'block';
   formEl.children[1].focus();
-  // console.log(formEl.children[1]);
 };
 
 export const renderLists = (el, listArr, countsArr) => {
@@ -30,11 +29,10 @@ export const renderLists = (el, listArr, countsArr) => {
     const description = document.createElement('div');
     description.classList.add('description');
 
-    // const
-
     const listName = document.createElement('p');
     listName.tabIndex = 0;
     listName.classList.add('list-name');
+    listName.dataset.name = `${name}-btn`;
 
     const listTodoCount = document.createElement('p');
     listTodoCount.classList.add('how-many');
@@ -43,6 +41,7 @@ export const renderLists = (el, listArr, countsArr) => {
     const del = document.createElement('i');
     del.tabIndex = 0;
     del.classList.add('list-del', 'fa-solid', 'fa-trash');
+    del.dataset.name = `${name}-btn`;
 
     listName.textContent = displayName;
 
@@ -59,24 +58,21 @@ export const renderLists = (el, listArr, countsArr) => {
 
     const p = document.createElement('p');
     p.textContent =
-      list.dataset.name === 'All' || list.dataset.name === 'Complete'
+      list.dataset.name === 'Todos' || list.dataset.name === 'Complete'
         ? 'clear?'
         : 'delete?';
 
     const options = document.createElement('div');
     options.classList.add('options');
     const yes = document.createElement('i');
-    // yes.tabIndex = '0';
     yes.classList.add('fa-solid', 'fa-check', 'options-btn');
-    // yes.setAttribute('role', 'button');
+    yes.dataset.name = `${name}-opt`;
     const no = document.createElement('i');
-    // no.tabIndex = '0';
     no.classList.add('fa-solid', 'fa-xmark', 'options-btn');
-    // no.setAttribute('role', 'button');
+    no.dataset.name = `${name}-opt`;
     options.appendChild(yes);
     options.appendChild(no);
 
-    // deleteForm.append(p, options);
     deleteForm.appendChild(p);
     deleteForm.appendChild(options);
 
@@ -91,18 +87,19 @@ export const updateListCount = (count, list) => {
 export const createListOption = (name, el) => {
   if (name === 'Complete') return;
   const selection = document.createElement('option');
-  const dataName = utils.addHyphen(name);
-  selection.setAttribute('value', dataName);
-  selection.textContent = name;
+  // const dataName = utils.addHyphen(name);
+  selection.setAttribute('value', name);
+  selection.textContent = utils.addASpace(name);
 
   el.appendChild(selection);
 };
 
-// export const createListOptions = (lists) => {
-//   lists.forEach(list => {
-
-//   })
-// }
+export const createListOptions = (lists) => {
+  elements.listDropdown.innerHTML = '';
+  lists.forEach((list) => {
+    createListOption(list, elements.listDropdown);
+  });
+};
 
 export const removeListOption = (value) => {
   document.querySelector(`option[value=${value}]`).remove();
@@ -116,8 +113,8 @@ export const hideMobileSidebar = () => {
   elements.sidebar.style.transform = 'translate(-100%, 0)';
 };
 
-export const toggleListDeleteForm = (element) => {
-  element.classList.toggle('show');
+export const toggleListDeleteForm = (wrapper) => {
+  wrapper.classList.toggle('show');
 };
 
 export const enableTabbing = (nodes) => {
@@ -132,6 +129,24 @@ export const disableTabbing = (nodes) => {
     const domNodes = nodes;
     domNodes[i].tabIndex = -1;
   }
+};
+
+export const toggleTabbingElements = (list, revealingHidden) => {
+  const listBtns = document.querySelectorAll(`[data-name="${list}-btn"]`);
+  const optBtns = document.querySelectorAll(`[data-name="${list}-opt"]`);
+
+  if (revealingHidden) {
+    disableTabbing(listBtns);
+    enableTabbing(optBtns);
+    return;
+  }
+  disableTabbing(optBtns);
+  enableTabbing(listBtns);
+};
+
+export const updateListView = (lists, counts) => {
+  renderLists(elements.listsWrapper, lists, counts);
+  createListOptions(lists);
 };
 
 export const bindMobileViewEvents = () => {
@@ -163,22 +178,7 @@ export const bindListSubmit = (callback) => {
   });
 };
 
-export const bindListDelete = (callback) => {
-  document.addEventListener('click', (e) => {
-    const delIcon = e.target.closest('.list-del');
-    if (delIcon) {
-      callback(e, delIcon);
-    }
-    // callback(e);
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      callback(e);
-    }
-  });
-};
-
-export const bindShowListDeleteOptions = (callback) => {
+export const bindRevealListOptions = (callback) => {
   document.addEventListener('click', (e) => {
     if (e.target.closest('.list-del')) {
       callback(e);
@@ -191,12 +191,28 @@ export const bindShowListDeleteOptions = (callback) => {
   });
 };
 
-export const bindListDeleteOptions = (callback) => {
+export const bindListDelete = (callback) => {
   document.addEventListener('click', (e) => {
-    callback(e);
+    if (e.target.matches('.fa-check')) {
+      callback(e);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.matches('.fa-check')) {
+      callback(e);
+    }
+  });
+};
+
+export const bindCloseListOptions = (callback) => {
+  document.addEventListener('click', (e) => {
+    if (e.target.matches('.fa-xmark')) {
+      callback(e);
+    }
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && e.target.matches('.fa-xmark')) {
       callback(e);
     }
   });
@@ -215,7 +231,7 @@ export const bindListSwitch = (callback) => {
   });
 };
 
-export const bindListRender = (callback) => {
+export const bindListOnLoad = (callback) => {
   document.addEventListener('DOMContentLoaded', (e) => {
     callback(e);
   });
