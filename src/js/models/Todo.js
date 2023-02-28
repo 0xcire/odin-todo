@@ -1,4 +1,3 @@
-// import { nanoid } from "../../../node_modules/nanoid/nanoid";
 import { nanoid } from 'nanoid';
 
 import storage from './Storage';
