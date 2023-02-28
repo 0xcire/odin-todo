@@ -37,12 +37,12 @@ export default class List {
     return counts;
   }
 
-  setLastViewedList(list) {
+  setLastViewedList(list = 'Todos') {
     this.storage.last = list;
     this.storage.pushToLocalStorage();
   }
 
-  // getLastViewedList() {
-  //   return;
-  // }
+  getLastViewed() {
+    return this.storage.last;
+  }
 }
