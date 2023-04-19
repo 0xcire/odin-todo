@@ -27,3 +27,4 @@ Base todo app as instructed by Odin.
 Spent some extra time on this after creating the Odin weather app. I knew when I originally made this, and the subsequent weather project that I wasn't exactly utilizing best practices.
 
 Came back to the todo app to refactor, added eslint(airbnb) to catch less glaring errors.
+ 
