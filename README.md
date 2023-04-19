@@ -12,6 +12,8 @@ Base todo app as instructed by Odin.
 
 - Utlizing MVC pattern as a way to separate concerns.
  - Allowed reusability of event handlers to consider accessibility for keyboard users.
+- ID based matching for updating, deleting todos
+ - Something I now understand is similar to PATCH, DELETE and get<X>ById methods with REST and MongoDB
  
 ## Features 
 
