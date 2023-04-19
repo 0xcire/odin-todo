@@ -1,8 +1,23 @@
-# Todo Odin Project
+# [Todo Odin Project](https://0xcire.github.io/odin-todo/)
 
 Base todo app as instructed by Odin.
 
-Project can be viewed [here](https://0xcire.github.io/odin-todo/)
+## Built with
+
+- HTML5 / CSS3
+- JavaScript
+- MVC Pattern
+
+## Learning Points
+
+- Utlizing MVC pattern as a way to separate concerns.
+ - Allowed reusability of event handlers to consider accessibility for keyboard users.
+ 
+## Features 
+
+- Granularly updating UI elements based on state
+- UI that follows user inputs, for a more intuitive UX
+- app state is persisted through local storage - last viewed project / todos
 
 #### remarks
 
