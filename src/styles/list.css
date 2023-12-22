@@ -76,6 +76,11 @@
   pointer-events: all;
 }
 
+.show-nav,
+.hide-nav {
+  cursor: pointer;
+}
+
 .options-btn {
   padding: 1rem;
   border-radius: 5px;

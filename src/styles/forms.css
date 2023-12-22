@@ -31,7 +31,8 @@
 }
 
 .title,
-.date {
+.date,
+.list-select {
   display: flex;
   flex-direction: column;
   text-align: left;

@@ -130,6 +130,7 @@ export default class ListView {
 
   showMobileSidebar() {
     this.sidebar.style.transform = 'translate(0,0)';
+    this.sidebar.style.overflow = 'hidden';
   }
 
   hideMobileSidebar() {
